@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright(c) 2022 astrojolo.com
+ Copyright(c) 2025 astrojolo.com
  .
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Library General Public
@@ -15,7 +15,7 @@
  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  Boston, MA 02110-1301, USA.
 *******************************************************************************/
-#include "indi_astrolink4mini2.h"
+#include "indi_astrolink4max.h"
 
 #include "indicom.h"
 
@@ -30,19 +30,19 @@
 //////////////////////////////////////////////////////////////////////
 /// Delegates
 //////////////////////////////////////////////////////////////////////
-std::unique_ptr<IndiAstroLink4mini2> indiFocuserLink(new IndiAstroLink4mini2());
+std::unique_ptr<IndiAstroLink4max> indiFocuserLink(new IndiAstroLink4max());
 
 //////////////////////////////////////////////////////////////////////
 ///Constructor
 //////////////////////////////////////////////////////////////////////
-IndiAstroLink4mini2::IndiAstroLink4mini2() : FI(this), WI(this)
+IndiAstroLink4max::IndiAstroLink4max() : FI(this), WI(this)
 {
     setVersion(VERSION_MAJOR, VERSION_MINOR);
 }
 
-const char *IndiAstroLink4mini2::getDefaultName()
+const char *IndiAstroLink4max::getDefaultName()
 {
-    return (char *)"AstroLink 4 mini II";
+    return (char *)"AstroLink 4 MAX";
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -50,14 +50,14 @@ const char *IndiAstroLink4mini2::getDefaultName()
 //////////////////////////////////////////////////////////////////////
 void ISPoll(void *p);
 
-bool IndiAstroLink4mini2::Handshake()
+bool IndiAstroLink4max::Handshake()
 {
     PortFD = serialConnection->getPortFD();
 
     char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("#", res))
     {
-        if (strncmp(res, "#:AstroLink4mini", 16) != 0)
+        if (strncmp(res, "#:AstroLink4Max", 15) != 0)
         {
             DEBUG(INDI::Logger::DBG_ERROR, "Device not recognized.");
             return false;
@@ -73,7 +73,7 @@ bool IndiAstroLink4mini2::Handshake()
     return false;
 }
 
-void IndiAstroLink4mini2::TimerHit()
+void IndiAstroLink4max::TimerHit()
 {
     if (isConnected())
     {
@@ -85,7 +85,7 @@ void IndiAstroLink4mini2::TimerHit()
 //////////////////////////////////////////////////////////////////////
 /// Overrides
 //////////////////////////////////////////////////////////////////////
-bool IndiAstroLink4mini2::initProperties()
+bool IndiAstroLink4max::initProperties()
 {
     INDI::DefaultDevice::initProperties();
 
@@ -194,7 +194,7 @@ bool IndiAstroLink4mini2::initProperties()
     return true;
 }
 
-bool IndiAstroLink4mini2::updateProperties()
+bool IndiAstroLink4max::updateProperties()
 {
     // Call parent update properties first
     INDI::DefaultDevice::updateProperties();
@@ -237,7 +237,7 @@ bool IndiAstroLink4mini2::updateProperties()
     return true;
 }
 
-bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double values[], char *names[], int n)
+bool IndiAstroLink4max::ISNewNumber(const char *dev, const char *name, double values[], char *names[], int n)
 {
     if (dev && !strcmp(dev, getDeviceName()))
     {
@@ -334,7 +334,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
     return INDI::DefaultDevice::ISNewNumber(dev, name, values, names, n);
 }
 
-bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n)
+bool IndiAstroLink4max::ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n)
 {
     if (dev && !strcmp(dev, getDeviceName()))
     {
@@ -467,12 +467,12 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
     return INDI::DefaultDevice::ISNewSwitch(dev, name, states, names, n);
 }
 
-bool IndiAstroLink4mini2::ISNewText(const char *dev, const char *name, char *texts[], char *names[], int n)
+bool IndiAstroLink4max::ISNewText(const char *dev, const char *name, char *texts[], char *names[], int n)
 {
     return INDI::DefaultDevice::ISNewText(dev, name, texts, names, n);
 }
 
-bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
+bool IndiAstroLink4max::saveConfigItems(FILE *fp)
 {
     IUSaveConfigSwitch(fp, &FocuserSelectSP);
     IUSaveConfigNumber(fp, &SQMOffsetNP);
@@ -482,7 +482,7 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
     return true;
 }
 
-bool IndiAstroLink4mini2::loadConfig(bool silent, const char *property)
+bool IndiAstroLink4max::loadConfig(bool silent, const char *property)
 {
     bool result = INDI::DefaultDevice::loadConfig(silent, property);
     DEBUG(INDI::Logger::DBG_DEBUG, "Init complete");
@@ -494,26 +494,26 @@ bool IndiAstroLink4mini2::loadConfig(bool silent, const char *property)
 //////////////////////////////////////////////////////////////////////
 /// Focuser interface
 //////////////////////////////////////////////////////////////////////
-IPState IndiAstroLink4mini2::MoveAbsFocuser(uint32_t targetTicks)
+IPState IndiAstroLink4max::MoveAbsFocuser(uint32_t targetTicks)
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
     snprintf(cmd, ASTROLINK4_LEN, "R:%i:%u", getFindex(), targetTicks);
     return (sendCommand(cmd, res)) ? IPS_BUSY : IPS_ALERT;
 }
 
-IPState IndiAstroLink4mini2::MoveRelFocuser(FocusDirection dir, uint32_t ticks)
+IPState IndiAstroLink4max::MoveRelFocuser(FocusDirection dir, uint32_t ticks)
 {
     return MoveAbsFocuser(dir == FOCUS_INWARD ? FocusAbsPosNP[0].getValue() - ticks : FocusAbsPosNP[0].getValue() + ticks);
 }
 
-bool IndiAstroLink4mini2::AbortFocuser()
+bool IndiAstroLink4max::AbortFocuser()
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
     snprintf(cmd, ASTROLINK4_LEN, "H:%i", getFindex());
     return (sendCommand(cmd, res));
 }
 
-bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
+bool IndiAstroLink4max::ReverseFocuser(bool enabled)
 {
     int index = getFindex() > 0 ? U_FOC2_REV : U_FOC1_REV;
     if (updateSettings("u", "U", index, (enabled) ? "1" : "0"))
@@ -527,7 +527,7 @@ bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
     }
 }
 
-bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
+bool IndiAstroLink4max::SyncFocuser(uint32_t ticks)
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
     snprintf(cmd, ASTROLINK4_LEN, "P:%i:%u", getFindex(), ticks);
@@ -542,7 +542,7 @@ bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
     }
 }
 
-bool IndiAstroLink4mini2::SetFocuserMaxPosition(uint32_t ticks)
+bool IndiAstroLink4max::SetFocuserMaxPosition(uint32_t ticks)
 {
     int index = getFindex() > 0 ? U_FOC2_MAX : U_FOC1_MAX;
     if (updateSettings("u", "U", index, std::to_string(ticks).c_str()))
@@ -556,13 +556,13 @@ bool IndiAstroLink4mini2::SetFocuserMaxPosition(uint32_t ticks)
     }
 }
 
-bool IndiAstroLink4mini2::SetFocuserBacklash(int32_t steps)
+bool IndiAstroLink4max::SetFocuserBacklash(int32_t steps)
 {
     //backlashSteps = steps;
     return true;
 }
 
-bool IndiAstroLink4mini2::SetFocuserBacklashEnabled(bool enabled)
+bool IndiAstroLink4max::SetFocuserBacklashEnabled(bool enabled)
 {
     //backlashEnabled = enabled;
     return true;
@@ -571,7 +571,7 @@ bool IndiAstroLink4mini2::SetFocuserBacklashEnabled(bool enabled)
 //////////////////////////////////////////////////////////////////////
 /// Serial commands
 //////////////////////////////////////////////////////////////////////
-bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
+bool IndiAstroLink4max::sendCommand(const char *cmd, char *res)
 {
     int nbytes_read = 0, nbytes_written = 0, tty_rc = 0;
     char command[ASTROLINK4_LEN];
@@ -636,7 +636,7 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
     return (cmd[0] == res[0]);
 }
 
-bool IndiAstroLink4mini2::readDevice()
+bool IndiAstroLink4max::readDevice()
 {
     char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("q", res))
@@ -822,7 +822,7 @@ bool IndiAstroLink4mini2::readDevice()
 //////////////////////////////////////////////////////////////////////
 /// Helper functions
 //////////////////////////////////////////////////////////////////////
-std::vector<std::string> IndiAstroLink4mini2::split(const std::string &input, const std::string &regex)
+std::vector<std::string> IndiAstroLink4max::split(const std::string &input, const std::string &regex)
 {
     // passing -1 as the submatch index parameter performs splitting
     std::regex re(regex);
@@ -832,28 +832,28 @@ std::vector<std::string> IndiAstroLink4mini2::split(const std::string &input, co
     return {first, last};
 }
 
-std::string IndiAstroLink4mini2::doubleToStr(double val)
+std::string IndiAstroLink4max::doubleToStr(double val)
 {
     char buf[10];
     sprintf(buf, "%.0f", val);
     return std::string(buf);
 }
 
-std::string IndiAstroLink4mini2::intToStr(double val)
+std::string IndiAstroLink4max::intToStr(double val)
 {
     char buf[10];
     sprintf(buf, "%i", (int)val);
     return std::string(buf);
 }
 
-bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, int index, const char *value)
+bool IndiAstroLink4max::updateSettings(const char *getCom, const char *setCom, int index, const char *value)
 {
     std::map<int, std::string> values;
     values[index] = value;
     return updateSettings(getCom, setCom, values);
 }
 
-bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, std::map<int, std::string> values)
+bool IndiAstroLink4max::updateSettings(const char *getCom, const char *setCom, std::map<int, std::string> values)
 {
     // Do not update till init is not complete
     if (!initComplete)
@@ -882,12 +882,12 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
     return false;
 }
 
-int IndiAstroLink4mini2::getFindex()
+int IndiAstroLink4max::getFindex()
 {
     return focuserIndex;
 }
 
-void IndiAstroLink4mini2::setFindex(int index)
+void IndiAstroLink4max::setFindex(int index)
 {
     DEBUGF(INDI::Logger::DBG_DEBUG, "Focuser index set to %i", index);
     focuserIndex = index;

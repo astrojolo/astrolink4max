@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright(c) 2022 astrojolo.com
+ Copyright(c) 2025 astrojolo.com
  .
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Library General Public
@@ -117,11 +117,11 @@ namespace Connection
     class Serial;
 }
 
-class IndiAstroLink4mini2 : public INDI::DefaultDevice, public INDI::FocuserInterface, public INDI::WeatherInterface
+class IndiAstroLink4max : public INDI::DefaultDevice, public INDI::FocuserInterface, public INDI::WeatherInterface
 {
 
 public:
-    IndiAstroLink4mini2();
+    IndiAstroLink4max();
     virtual bool initProperties();
     virtual bool updateProperties();
 
