@@ -1,3 +1,5 @@
+![AstroLink 4 MAX Banner](https://shop.astrojolo.com/wp-content/uploads/sites/2/2025/07/astrolink-max-banner-2025.jpg)
+
 ## Device
 https://shop.astrojolo.com/product-detail-pages/astrolink-4-max/
 
