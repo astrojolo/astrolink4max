@@ -2,12 +2,6 @@
 
 # AstroLink 4 MAX  
 
-![ASCOM Compatible](https://img.shields.io/badge/ASCOM-Compatible-blue)  
-![USB 3 Hub](https://img.shields.io/badge/USB-3%20Hub-green)  
-![Power Outputs](https://img.shields.io/badge/Power-12V-orange)  
-![Dew Control](https://img.shields.io/badge/Dew%20Control-PWM-red)  
-![Colors](https://img.shields.io/badge/Colors-Black%20%7C%20Graphite%20%7C%20Cherry%20Red-lightgrey)  
-
 ---
 
 ## Overview  
