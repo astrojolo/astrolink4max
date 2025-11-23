@@ -579,7 +579,7 @@ bool IndiAstroLink4max::sendCommand(const char *cmd, char *res)
     if (isSimulation())
     {
         if (strncmp(cmd, "#", 1) == 0)
-            sprintf(res, "%s\n", "#:AstroLink4mini");
+            sprintf(res, "%s\n", "#:AstroLink4max");
         if (strncmp(cmd, "q", 1) == 0)
             sprintf(res, "%s\n", "q:AL4MII:1234:0:5678:0:3.14:1:23.12:45:9.11:1:19.19:35:80:1:0:1:12.11:7.62:20.01:132.11:33:0:0:0:1:-10.1:7.7:1:19.19:35:8.22:1:1:18.11");
         if (strncmp(cmd, "p", 1) == 0)
@@ -589,7 +589,7 @@ bool IndiAstroLink4max::sendCommand(const char *cmd, char *res)
         if (strncmp(cmd, "u", 1) == 0)
             sprintf(res, "%s\n", "u:1:1:80:120:30:50:200:800:200:800:0:2:10000:80000:0:0:50:18:30:15:5:10:10:0:1:0:0:0:0:0:0:0:40:90:10:1100:14000:10000:100:0");
         if (strncmp(cmd, "A", 1) == 0)
-            sprintf(res, "%s\n", "A:4.5.0 mini II");
+            sprintf(res, "%s\n", "A:5.0.2 MAX");
         if (strncmp(cmd, "R", 1) == 0)
             sprintf(res, "%s\n", "R:");
         if (strncmp(cmd, "C", 1) == 0)
